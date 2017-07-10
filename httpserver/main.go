@@ -1,6 +1,6 @@
 package main
 
-import "gmserver/userservice/server"
+import "gmserver/httpserver/server"
 
 func main() {
 	server.Run("8080")

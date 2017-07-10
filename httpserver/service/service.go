@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func RemoteService(serviceName string, params map[string]interface{}, result *interface{}) error {
+func RemoteService(serviceName string, params map[string]interface{}, result interface{}) error {
 	client, err := rpc.DialHTTP("tcp", "127.0.0.1:9001")
 	if err != nil {
 		log.Println("error", err)

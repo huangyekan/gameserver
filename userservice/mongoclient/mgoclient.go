@@ -28,7 +28,11 @@ func Insert(collection string, docs ...interface{}) error {
 }
 
 func FindOne(collection string, query interface{}, result interface{}) error {
-	if err := globalSession.Copy().DB(dbName).C(collection).Find(query).One(result); err != nil {
+	err := globalSession.Copy().DB(dbName).C(collection).Find(query).One(result);
+	if err == mgo.ErrNotFound {
+		return nil
+	}
+	if err != nil {
 		log.Println("find one err", err)
 		return err
 	}

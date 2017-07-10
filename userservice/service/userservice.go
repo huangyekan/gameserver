@@ -10,7 +10,7 @@ import (
 type UserService int
 
 func (u *UserService) GetUserByAccount(args map[string]interface{}, reply *model.User) error {
-	err := mongoclient.FindOne("user", bson.M{"Account" : args["Account"], "valid" : true}, &reply)
+	err := mongoclient.FindOne("user", bson.M{"account" : args["account"], "valid" : true}, &reply)
 	if err != nil {
 		log.Println(err)
 		return err
