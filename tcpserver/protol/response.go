@@ -3,7 +3,7 @@ package protol
 type Response struct {
 	Msg string `msg`
 	Code int `code`
-	Data map[string]interface{} `data`
+	Data interface{} `data`
 }
 
 var NETWORK_ERROR *Response = &Response{

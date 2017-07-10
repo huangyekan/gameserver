@@ -90,7 +90,7 @@ func doRequest(message *protol.Message) {
 		return
 	}
 	log.Println(conn.RemoteAddr().String())
-	conn.Write([]byte("aaa"))
+	conn.Write(res)
 }
 
 func doRegister(conn *net.TCPConn, message *protol.Message) {

@@ -11,6 +11,7 @@ import (
 func init() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 	rpc.Register(new(service.Echo))
+	rpc.Register(new(service.UserService))
 }
 
 func Run(port string) {
