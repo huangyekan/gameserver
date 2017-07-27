@@ -1,16 +1,16 @@
 package protol
 
 type Message struct {
-	Header Header	`header`
-	Content Content `content`
+	Header Header	`json:"header"`
+	Content Content `json:"content"`
 }
 
 type Header struct {
-	Type string `type`
-	Token string `token`
+	Type string `json:"type"`
+	Token string `json:"token"`
 }
 
 type Content struct {
-	Method string `method`
-	Params map[string]interface{} `params`
+	Method string `json:"method"`
+	Params map[string]interface{} `json:"params"`
 }
