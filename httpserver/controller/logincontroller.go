@@ -21,17 +21,17 @@ func Index(w http.ResponseWriter, r *http.Request)  {
 	templatePath := filepath.Join(wd, "/httpserver/static/template/")
 	if err != nil {
 		log.Println("get cookie error", err)
-		log.Println(filepath.Join(templatePath, "index.html"))
-		t, _ := template.ParseFiles(filepath.Join(templatePath, "index.html"))
+		t, _ := template.ParseFiles(filepath.Join(templatePath, "login.html"))
 		t.Execute(w, nil)
 		return
 	}
 	token := cookie.Value
 	if !userService.CheckToken(token) {
-		t, _ := template.ParseFiles(filepath.Join(templatePath, "index.html"))
+		t, _ := template.ParseFiles(filepath.Join(templatePath, "login.html"))
 		t.Execute(w, nil)
 		return
 	}
+
 }
 
 
@@ -48,11 +48,3 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 }
 
 
-func RegisterIndex(w http.ResponseWriter, r *http.Request)  {
-	r.ParseForm()
-
-}
-
-func Register(w http.ResponseWriter, r *http.Request)  {
-	
-}

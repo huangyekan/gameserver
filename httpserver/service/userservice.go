@@ -31,3 +31,4 @@ func (u *UserService) CheckToken(token string) bool {
 	}
 	return false
 }
+

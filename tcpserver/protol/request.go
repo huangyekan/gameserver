@@ -8,6 +8,7 @@ type Message struct {
 type Header struct {
 	Type string `json:"type"`
 	Token string `json:"token"`
+	Id string `json:"id"`
 }
 
 type Content struct {

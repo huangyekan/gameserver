@@ -1,0 +1,46 @@
+<html>
+<head>
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div align="center">
+    <h2>注册</h2></br>
+    <form>
+        *账户: <input type="text" id="account" name="account"/></br>
+        *密码: <input type="text" id="password" name="password"/>
+        *重复密码: <input type="text" id="password2" name="password2"/>
+    </form>
+    <button id="register">注册</button>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#register").click(function () {
+            var account = $("#account");
+            var password = $("#password");
+            var password2 = $("#password2");
+            if (!password.isEqual(password2)) {
+                alert("！！！");
+                return;
+            }
+            $.ajax({
+                type: 'POST',
+                url: "http://localhost:8080/register" ,
+                data: "account=" + account+"&password=" + password ,
+                success: function (result) {
+                    if (result == "ok") {
+                        alert("注册成功")
+                        location.href = "http://localhost:8080/login";
+                        return true;
+                    }
+                }
+            })
+
+        })
+    });
+</script>
+</body>
+
+</html>

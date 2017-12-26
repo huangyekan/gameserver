@@ -6,10 +6,10 @@ import (
 	"encoding/json"
 	"gmserver/tcpserver/protol"
 	"gmserver/tcpserver/handler"
+	"gmserver/tcpserver/util"
 )
 
 var ConnMap = make(map[string]*net.TCPConn)
-
 
 const (
 	PING     = "ping"
@@ -17,14 +17,14 @@ const (
 	REGISTER = "register"
 )
 
-func init()  {
+func init() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 }
 
 func Run(port int) {
 	lisener, err := net.ListenTCP("tcp",
 		&net.TCPAddr{
-			IP:   net.ParseIP("127.0.0.1"),
+			IP:   net.ParseIP("0.0.0.0"),
 			Port: port,
 		})
 	if err != nil {
@@ -49,8 +49,8 @@ func handleConnection(conn *net.TCPConn) {
 	go handleMessage(conn, messageChannel)
 	for {
 		n, err := conn.Read(buf)
-		buf := append(buf[:n], tmpBuf...)
-		log.Println(string(buf))
+		//buf := append(buf[:n], tmpBuf...)
+		buf := append(tmpBuf, buf[:n]...)
 		if err != nil {
 			log.Println("读取数据异常", err.Error())
 			break;
@@ -71,7 +71,7 @@ func handleMessage(conn *net.TCPConn, messageChannel chan string) {
 		msg := parseMessage(message)
 		switch msg.Header.Type {
 		case PING:
-			ping(conn)
+			ping(conn, msg)
 		case REQUEST:
 			doRequest(msg)
 		case REGISTER:
@@ -80,27 +80,37 @@ func handleMessage(conn *net.TCPConn, messageChannel chan string) {
 	}
 }
 
-func doRequest(message *protol.Message) {
-	response := handler.Dispatcher(&message.Content)
+func responseMessage(response *protol.Response, conn *net.TCPConn) {
 	res, _ := json.Marshal(response)
-	log.Println("res ", string(res))
+	log.Println("response ", string(res))
+	res = append(util.IntToBytes(len(string(res))), res...)
+	conn.Write(res)
+}
+
+func doRequest(message *protol.Message) {
+	response := handler.Dispatcher(message)
 	conn := ConnMap[message.Header.Token]
 	if conn == nil {
 		log.Println("用户已断开")
 		return
 	}
 	log.Println(conn.RemoteAddr().String())
-	conn.Write(res)
+	responseMessage(response, conn)
 }
 
 func doRegister(conn *net.TCPConn, message *protol.Message) {
 	log.Println(" register ", "ip : ", conn.RemoteAddr().String(), "token : ", message.Header.Token)
 	ConnMap[message.Header.Token] = conn
+	response := protol.OK
+	response.Id = message.Header.Id
+	responseMessage(response, conn)
 }
 
-func ping(conn *net.TCPConn) {
+func ping(conn *net.TCPConn, message *protol.Message) {
 	log.Println(conn.RemoteAddr().String() + " ping success")
-	conn.Write([]byte("success..."))
+	response := protol.OK
+	response.Id = message.Header.Id
+	responseMessage(response, conn)
 }
 
 func parseMessage(message string) *protol.Message {

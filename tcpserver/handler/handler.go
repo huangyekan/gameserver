@@ -7,10 +7,10 @@ import (
 	"net/rpc"
 )
 
-func Dispatcher(content *protol.Content) *protol.Response {
-	interfaceName, methodName := parseContent(content)
 
-	client, err := rpc.DialHTTP("tcp", "127.0.0.1:9001")
+func Dispatcher(message *protol.Message) *protol.Response {
+	interfaceName, methodName := parseContent(&message.Content)
+	client, err := rpc.DialHTTP("tcp", "127.0.0.1:9002")
 	if err != nil {
 		log.Println("error", err)
 		return &protol.Response{
@@ -19,14 +19,14 @@ func Dispatcher(content *protol.Content) *protol.Response {
 		}
 	}
 	var reply interface{}
-	err = client.Call(interfaceName+"."+methodName, content.Params, &reply)
+	err = client.Call(interfaceName+"."+methodName, message.Content.Params, &reply)
 	if err != nil {
 		return &protol.Response{
 			Msg:  err.Error(),
 			Code: 1000,
 		}
 	}
-	return buildResopnse(reply)
+	return buildResopnse(reply, message.Header.Id)
 }
 
 func parseContent(content *protol.Content) (interfaceName string, methodName string) {
@@ -34,9 +34,10 @@ func parseContent(content *protol.Content) (interfaceName string, methodName str
 	return values[0], values[1]
 }
 
-func buildResopnse(reply interface{}) *protol.Response {
+func buildResopnse(reply interface{}, id string) *protol.Response {
 	return &protol.Response{
-		Code: 100,
+		Id: id,
+		Code: 0,
 		Data: reply,
 	}
 }

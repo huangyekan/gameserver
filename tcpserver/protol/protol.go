@@ -15,11 +15,11 @@ func Decode(buf []byte, messages []string) (result []string, leftBuf []byte) {
 		return messages, buf
 	}
 	messageLength := getMessageLength(buf[:HEAD_LENGTH])
-	if messageLength > len(buf) - HEAD_LENGTH {
+	if messageLength > len(buf)-HEAD_LENGTH {
 		return messages, buf
 	}
-	result = append(messages, string(buf[HEAD_LENGTH:HEAD_LENGTH + messageLength]))
-	leftBuf = buf[HEAD_LENGTH + messageLength:len(buf)]
+	result = append(messages, string(buf[HEAD_LENGTH:HEAD_LENGTH+messageLength]))
+	leftBuf = buf[HEAD_LENGTH+messageLength:len(buf)]
 	return Decode(leftBuf, result)
 }
 

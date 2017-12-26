@@ -11,6 +11,7 @@ var dbName = "game"
 var globalSession *mgo.Session
 
 func init() {
+	log.Println("init mongodb....")
 	session, err := mgo.Dial(mongoAddr)
 	if err != nil {
 		log.Fatal()

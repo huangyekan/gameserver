@@ -10,6 +10,7 @@ import (
 
 func init() {
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
+	log.Println("init rpcServer....")
 	rpc.Register(new(service.Echo))
 	rpc.Register(new(service.UserService))
 }
